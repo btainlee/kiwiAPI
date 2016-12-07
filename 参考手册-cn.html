@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Kiwi 使用手册</title>
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+  </head>
+  <body>
+  <div class="total">
+  	<div class="jumbotron">
+  		<h2>欢迎使用Kiwivm面板API中文手册</h2>
+  		<p>
+  			<h3>自动创建快照?查询状态你的VPS?或开发一个完全替代替代KiwiVM的面板?</h3>
+  			<h3>（所有的参数都可以通过Post或者Get方式传递.）</h3>
+  		</p>
+  		<p><a class="btn btn-primary btn-lg" role="button" href="./参考手册-en.html" target="_blank">查看官方英文版</a></p>
+	</div>
+  	<h2>PHP案例</h2>
+  	<div class="panel panel-default">
+  		<div class="panel-body">
+    		<h3> //案例1    获取服务器的相关信息</h3>
+    		<!--案例1的代码-->
+    		<pre>
+    			$request = "https://api.64clouds.com/v1/getServiceInfo?veid=379347&api_key=YOUR_API_KEY_HERE";
+			$serviceInfo = json_decode (file_get_contents ($request));
+			print_r ($serviceInfo);
+    		</pre>
+    		<!--案例1获取的结果-->
+    		<pre>
+    			/* ------------------------------- [ output ] -------------------------------
+stdClass Object
+(
+    [hostname] => my.server.com
+    [node_ip] => 10.20.30.40
+    [node_alias] => Node32
+    [node_location] => US, Florida
+    [plan] => micro128
+    [plan_monthly_data] => 322122547200
+    [plan_disk] => 4294967296
+    [plan_ram] => 155189248
+    [plan_swap] => 37748736
+    [os] => centos-6-x86_64
+    [email] => customer@example.com
+    [data_counter] => 569810827
+    [data_next_reset] => 1430193600
+    [ip_addresses] => Array
+        (
+            [0] => 11.22.33.44
+            [1] => 11.22.33.45
+        )
+
+    [rdns_api_available] => 1
+    [ptr] => stdClass Object
+        (
+            [11.22.33.44] => ns1.my.server.com
+            [11.22.33.45] => ns2.my.server.com
+        )
+
+    [error] => 0
+)
+*/
+
+    		</pre>
+    		
+    		<h3>//案例2    创建一个快照</h3>
+    		<!--案列2的代码-->
+    		<pre>
+    				$request = "https://api.64clouds.com/v1/snapshot/create?description=Automatic_Snapshot&veid=379347&api_key=YOUR_API_KEY_HERE";
+				$serviceInfo = json_decode (file_get_contents ($request));
+				print_r ($serviceInfo);
+    		</pre>
+    		<!--案例2获取的结果-->
+    		<pre>
+    			
+/* ------------------------------- [ output ] -------------------------------
+stdClass Object
+(
+    [error] => 0
+    [notificationEmail] => customer@example.com
+)
+*/
+    		</pre>
+    		
+    		<h3>//案例3   重启VPS</h3>
+    		<!--案例3的代码-->
+    		<pre>
+    				$request = "https://api.64clouds.com/v1/restart?veid=379347&api_key=YOUR_API_KEY_HERE";
+				$serviceInfo = json_decode (file_get_contents ($request));
+				print_r ($serviceInfo);
+
+    		</pre>
+    		<!--案例3获取的结果-->
+    		<pre>
+    			/* ------------------------------- [ output ] -------------------------------
+stdClass Object
+(
+    [error] => 0
+)
+*/
+    		</pre>
+    		
+    		<h3>//案例4 设置	PRT记录</h3>
+    		<!--案例4的代码-->
+    		<pre>
+    				$request = "https://api.64clouds.com/v1/setPTR?ip=11.22.33.44&ptr=ns1.my.server.com&veid=379347&api_key=YOUR_API_KEY_HERE";
+				$serviceInfo = json_decode (file_get_contents ($request));
+				print_r ($serviceInfo);
+    		</pre>
+    		<!--案例4获取的结果-->
+    		<pre>
+    			
+/* ------------------------------- [ output ] -------------------------------
+stdClass Object
+(
+    [error] => 0
+)
+*/
+    		</pre>
+    		
+    		<h3>// 案例5    使用 wget 命令重启VPS</h3>
+    		<!--案例5的代码-->
+    		<pre>
+    				wget -qO- "https://api.64clouds.com/v1/restart?veid=379347&api_key=YOUR_API_KEY_HERE"
+    		</pre>
+    		<!--案例5获取的结果-->
+    		<pre>
+    			/* ------------------------------- [ output ] -------------------------------
+{"error":0}
+*/
+    		</pre>
+    		
+    		<h3>//案例6    使用crul重启VPS</h3>
+    		<!--案例6的代码-->\
+    		<pre>
+    				//You may want to use curl instead as it allows passing all variables in a POST request
+
+				$requestData = array ("veid" => 379347, "api_key" => "YOUR_API_KEY_HERE");
+				$request = "restart";
+				$ch = curl_init(); 
+				curl_setopt($ch, CURLOPT_URL, "https://api.64clouds.com/v1/$request"); 
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // curl running on Windows has issues with SSL - 
+                                             // see https://kb.ucla.edu/articles/how-do-i-use-curl-in-php-on-windows
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $requestData);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+				$jsonData = curl_exec($ch); 
+				if (curl_error($ch)) die("Connection Error: ".curl_errno($ch)." - ".curl_error($ch));
+				curl_close($ch);
+				print_r (json_decode ($jsonData));
+    		</pre>
+    		<!--案例6的输出结果-->
+    		<pre>
+    			
+/* ------------------------------- [ output ] -------------------------------
+stdClass Object
+(
+    [error] => 0
+)
+*/
+    		</pre>
+    		
+    		<h3>
+  		</div>
+	</div>
+	
+  <h2> 可用的调用</h2>
+  <h5>每个API的调用需要你提供VPS ID和API KEY.
+  <h5>每次调用都会返回error变量，如果变量值是non-zero,检查'message'变量以获取更多相关信息。</h5>
+  		<table class="table table-bordered">
+  				<tr>
+  					<td>调用</td>
+  					<td>参数</td>
+  					<td>描述和返回值</td>
+  				</tr>
+  				<!--start-->
+  				<tr>
+  					<td>start</td>
+  					<td class="none">none</td>
+  					<td>开启VPS</td>
+  				</tr>
+  				<!--stop-->
+  				<tr>
+  					<td>stop</td>
+  					<td class="none">none</td>
+  					<td>关闭VPS</td>
+  				</tr>
+  				<!--restart-->
+  				<tr>
+  					<td>restart</td>
+  					<td class="none">none</td>
+  					<td>重启VPS</td>
+  				</tr>
+  				<!--kill-->
+  				<tr>
+  					<td>kill</td>
+  					<td class="none">none</td>
+  					<td>强制关闭VPS,除非卡死或者不能通过正常的方式关机，否则慎用！</td>
+  				</tr>
+  				<!--getServiceInfo-->
+  				<tr>
+  					<td>getServiceInfo</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span class="span">返回值</span>
+  						<ul>
+  							
+  							<li><button type="button" class="btn btn-default">hostname</button>:VPS的主机名</li>
+  							<li><button type="button" class="btn btn-default">node_ip</button>：物理节点的ip地址</li>
+  							<li><button type="button" class="btn btn-default">node_alias</button>物理节点别名</li>
+  							<li><button type="button" class="btn btn-default">node_location</button>:节点位置</li>
+  							<li><button type="button" class="btn btn-default">location_ipv6_ready</button>:节点是否支持ipv6</li>
+  							<li><button type="button" class="btn btn-default">plan</button>:计划名称</li>
+  							<li><button type="button" class="btn btn-default">plan_monthly_data</button>:每月允许使用的数据量（bytes)</li>
+  							<li><button type="button" class="btn btn-default">plan_disk</button>:硬盘限额(bytes)</li>
+  							<li><button type="button" class="btn btn-default">plan_ram</button>:RAM(bytes)</li>
+  							<li><button type="button" class="btn btn-default">plan_swap</button>:SWAP(bytes)</li>
+  							<li><button type="button" class="btn btn-default">os</button>:操作系统</li>
+  							<li><button type="button" class="btn btn-default">email</button>:账户初始邮箱</li>
+  							<li><button type="button" class="btn btn-default">data_counter</button>:本月已使用流量</li>
+  							<li><button type="button" class="btn btn-default">data_next_reset</button>:下次流量重置时间</li>
+  							<li><button type="button" class="btn btn-default">ip_addresses</butto>:分配的ipv4和ipv6地址(array)</li>
+  							<li><button type="button" class="btn btn-default">plan_max_ipv6s</button>:ipv6地址计划最大数</li>
+  							<li><button type="button" class="btn btn-default">rdns_api_avaiable</button>:是否能通过API设置rDNS记录</li>
+  							<li><button type="button" class="btn btn-default">ptr</button>:rDNS记录(ip=>value)</li>
+  							<li><button type="button" class="btn btn-default">suspended</button>:VPS是否被暂停</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--getLiveServiceInfo-->
+  				<tr>
+  					<td>getLiveServiceInfo</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>这个函数返回所有getServerInfo能返回的值，另外还返回某些细节。但是时间较长，甚至达到15秒。</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">vz_status</button>:VPS的主机名</li>
+  							<li><button type="button" class="btn btn-default">vz_quato</button>:VPS的主机名</li>
+  							<li><button type="button" class="btn btn-default">is_cpu_throttled</button>:VPS的主机名</li>
+  							<li><button type="button" class="btn btn-default">ssh_port</button>:VPS的主机名</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--getAvailableOS-->
+  				<tr>
+  					<td>getAvailableOS</td>
+  					<td class="none">none</td>
+  					<td>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">installed</button>:VPS的主机名</li>
+  							<li><button type="button" class="btn btn-default">templates</button>:VPS的主机名</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--reinstallOS-->
+  				<tr>
+  					<td>reinstallOS</td>
+  					<td>os</td>
+  					<td><span>重装操作系统</span></td>
+  				</tr>
+  				<!--resetRootPassword-->
+  				<tr>
+  					<td>resetRootPassword</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>产生一个新的Root密码</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">password</button>:新的root密码</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--getUsageGraphs-->
+  				<tr>
+  					<td>getUsageGraphs</td>
+  					<td class="none">none</td>
+  					<td>被淘汰，用getRawUsageStats替代</td>
+  				</tr>
+  				<!--getRawUsageStats-->
+  				<tr>
+  					<td>getRawUsageStats</td>
+  					<td class="none">none</td>
+  					<td><sapn>返回一个细节统计的二维数组</span></td>
+  				</tr>
+  				<!--setHostname-->
+  				<tr>
+  					<td>setHostname</td>
+  					<td>newHostname</td>
+  					<td><span>set new hostname</span></td>
+  				</tr>
+  				<!--setPTR-->
+  				<tr>
+  					<td>setPTR</td>
+  					<td>ip,ptr</td>
+  					<td><span>为ip地址设置新的PTR(rdns)</span></td>
+  				</tr>
+  				<!--basicShell/cd-->
+  				<tr>
+  					<td>basicShell/cd</td>
+  					<td>(currentDir,newDir)<br>(当前目录,新的目录)</td>
+  					<td>
+  						<span>模拟在VPS中改变所在目录，可用来建立一个类似于basic shell的shell程序.</span>
+  						<li><button type="button" class="btn btn-default">pwd</button>:返回执行后的文件目录</li>
+  					</td>
+  				</tr>
+  				
+  				<!--basicShell/exec-->
+  				<tr>
+  					<td>basicShell/exec</td>
+  					<td>command(/命令)</td>
+  					<td>
+  						<span>执行一个Shell命令</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">error</button>:命令的退出状态码</li>
+  							<li><button type="button" class="btn btn-default">message</button>:命令在控制台的输出结果</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--shellScript/exec-->
+  				<tr>
+  					<td>shellScript</td>
+  					<td>script</td>
+  					<td>
+  						<span>在控制台执行shell脚本</span>
+  						<li><button type="button" class="btn btn-default">log</button>:输出的日志文件名</li>
+  					</td>
+  				</tr>
+  				<!--snapshot/crate-->
+  				<tr>
+  					<td>snapshot/crate</td>
+  					<td>description(可选)</td>
+  					<td>
+  						<sapn>创建快照</span>
+  						<li><button type="button" class="btn btn-default">notificationEmail</button>:一旦完成会发送到email一封邮件</li>
+  					</td>
+  				</tr>
+  				<!--snapshot/list-->
+  				<tr>
+  					<td>snapshot/list</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>获取快照列表</span>
+  						<li><button type="button" class="btn btn-default">snapshots</button>:快照数组（fileName,os,description,size,md5,sticky,purgesIn,downloadLink）</li>
+  					</td>
+  				</tr>
+  				<!--snapshot/delete-->
+  				<tr>
+  					<td>snapshot/delete</td>
+  					<td>snapshot</td>
+  					<td>
+  						<span>根据文件名删除快照</span>
+  					</td>
+  				</tr>
+  				<!--snapshot/restore-->
+  				<tr>
+  					<td>snapshot/restore</td>
+  					<td>snapshot(/快照)</td>
+  					<td>
+  						<span>根据文件名还原快照,VPS上的所有数据将被重写</span>
+  					</td>
+  				</tr>
+  				<!--snapshot/toggleSticky-->
+  				<tr>
+  					<td>snapshot/toggleSticky</td>
+  					<td>snapshot,sticky</td>
+  					<td>
+  						<span>
+  							设置或者移除 sticky属性,快照的名字可以被重新获取。<br>
+  							sticky = 1->   设置sticky属性。<br>
+  							sticky = 0->   移除sticky属性。
+  						</span>
+  					</td>
+  				</tr>
+  				<!--snapshot/export-->
+  				<tr>
+  					<td>snapshot/export</td>
+  					<td>snapshot</td>
+  					<td>
+  						<span>生成一个可以快速转移快快照到别的机器的token文件</span>
+  					</td>
+  				</tr>
+  				<!--snapshot/import-->
+  				<tr>
+  					<td>snapshot/import</td>
+  					<td>sourceVeid,sourceToken</td>
+  					<td>
+  						<span>
+  							通过token或者VEID指令快速导入一个快照。<br>
+  							token或者VEID应该是通过export方法生成。
+  						</span>
+  					</td>
+  				</tr>
+  				<!--ipv6/add-->
+  				<tr>
+  					<td>ipv6/add</td>
+  					<td>ip</td>
+  					<td>
+  						<span>
+  							分配一个ip地址，如果是第一次则不需要参数。<br>
+  							后申请的ipv6地址和第一个ipv6地址在同一个子网络中。
+  						</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">ip</button>:新申请的ipv6地址</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--ipv6/delete-->
+  				<tr>
+  					<td>ipv6/delete</td>
+  					<td>ip</td>
+  					<td>
+  						<sapn>释放指定的ipv6地址</span>
+  					</td>
+  				</tr>
+  				<!--migrate/getLocations-->
+  				<tr>
+  					<td>migrate/getLocations</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>返回所有的能更换的机房位置</sapn>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">currentLocation</button>:当前机房位置的Id</li>
+  							<li><button type="button" class="btn btn-default">locations</button>:可更换的机房的ID</li>
+  							<li><button type="button" class="btn btn-default">descriptions</button>:对可更换的机房的描述</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--migrate/start-->
+  				<tr>
+  					<td>migrate/start</td>
+  					<td>location</td>
+  					<td>
+  						<span>
+  							开始更换机房，参数是机房位置ID。<br>
+  							更换后，ipv4地址会更换，ipv6地址会释放掉。
+  						</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">notificationEmail</button>:完成后将收到电子邮件的邮箱地址</li>
+  							<li><button type="button" class="btn btn-default">newIps</button>:分配的ips(数组形式).</li>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--cloneFromExtemalServer-->
+  				<tr>
+  					<td>cloneFromExtemalServer</td>
+  					<td>
+  						extemalServerIP,<br>
+  						extemalServerSSHport,<br>
+  						extemalServerRootPassword
+  					</td>
+  					<td>
+  						<span>克隆一个远程的服务器或者是vps</span>
+  					</td>
+  				</tr>
+  				<!--getSuspensionDetails-->
+  				<tr>
+  					<td>getSuspensionDetails</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>检索暂停服务的相关信息</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">suspension_count</button>:服务在本年被暂停的次数</li>
+  							<li><button type="button" class="btn btn-default">suspensions</button>:突出的问题和破坏性使用的记录</li>
+  							<li><button type="button" class="btn btn-default">eivdence</button>:关于问题的完整的信息</li>
+  							案例:
+  							<pre>
+  								[suspensions] => Array
+
+        (
+
+            [0] => stdClass Object
+
+                (
+
+                    [record_id] => 11851         // Case ID, needed to unsuspend 
+
+                                                 // the service via "unsuspend" API call
+
+
+
+                    [flag] => copyright          // Type of abuse
+
+
+
+                    [is_soft] => 1               // 0 = must contact support to unsuspend
+
+                                                 // 1 = can unsuspend via API call
+
+
+
+                    [evidence_record_id] => 2207 // Detailed abuse report ID (see below)
+
+                )
+
+
+
+        )
+
+
+
+    [evidence] => stdClass Object
+
+        (
+
+            [2207] => "Full text of abuse complaint here"
+
+        )
+
+
+
+    [suspension_count] => 2
+  							</pre>
+  						</ul>
+  					</td>
+  				</tr>
+  				<!--unsuspend-->
+  				<tr>
+  					<td>unsuspend</td>
+  					<td>record_id</td>
+  					<td>
+  						<span>
+  							通过record_ip清除不良使用问题并且恢复使用VPS.
+  						</span>
+  					</td>
+  				</tr>
+  				<!--getRateLimitStatus-->
+  				<tr>
+  					<td>getRateLimitStatus</td>
+  					<td class="none">none</td>
+  					<td>
+  						<span>当你在一定时间调用过多的Kiwi API时，KiWi会拒绝你的请求。这个调用监视原因</span>
+  						<ul>
+  							<li><button type="button" class="btn btn-default">remaining_points_15min</button>:最近15分钟可以被使用的"pointer"数量</li>
+  							<li><button type="button" class="btn btn-default">remaining_points_24h</button>:最近24h可以被使用的"pointer"数量</li>
+  						</ul>
+  					</td>
+  				</tr>
+  		</table>
+  </div> 
+  </body>
+</html>
